@@ -5,8 +5,6 @@ let graph = (open_graph "");;
 
 let half_x = (size_x graph) / 2;;
 let half_y = (size_y graph) / 2;;
-print_endline ("half_x: " ^ (string_of_int half_x));;
-print_endline ("half_y: " ^ (string_of_int half_y));;
 
 let max_radius =
   if half_x > half_y then
@@ -14,10 +12,8 @@ let max_radius =
   else
     half_y
 ;;
-print_endline ("max_radius: " ^ (string_of_int max_radius));;
 
 let ring_count = 5 * 4 * 3 * 2 ;;
-print_endline ("ring_count: " ^ (string_of_int ring_count));;
 
 for i = Random.int ring_count downto 1 do
   let radius = max_radius / ring_count in
