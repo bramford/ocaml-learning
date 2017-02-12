@@ -1,5 +1,10 @@
-Random.self_init ();;
-Graphics.open_graph " 640x480";;
+#!/usr/bin/env ocaml
+
+open Random
+open Graphics;;
+
+self_init ();;
+open_graph " 640x480"
 
 let rec iterate r x_init i =
   if i = 1 then x_init
@@ -17,4 +22,4 @@ for x = 0 to 639 do
   done
 done;;
 
-read_line();;
+read_line()
