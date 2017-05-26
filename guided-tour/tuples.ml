@@ -7,7 +7,7 @@ y + String.length x;;
 let (a,b,c) = b_tuple;;
 
 (* standard style looks alright *)
-a +. (float_of_int b) +. (float_of_int ((String.length c) - 1))
+a +. (float_of_int b) +. (float_of_int ((String.length c) - 1));;
 
 (* and pipe style looks crap (in this case) *)
 float_of_int b |> fun fb ->
