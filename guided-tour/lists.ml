@@ -9,12 +9,12 @@ let l_over x l =
 l_over 3 int_list;;
 
 (* method using recursive pattern matching*)
-let rec l_over_pm x l nl =
+let rec l_over_pm x l ?(nl=[]) =
   match l with
-  | [] -> nl
+  | [] | [_] -> nl
   | hd :: tl ->
-    if hd > x then l_over_pm x tl (hd :: nl)
-    else l_over_pm x tl nl
+    if hd > x then l_over_pm x tl ~nl:(hd :: nl)
+    else l_over_pm x tl ~nl:nl
 ;;
 
-l_over_pm 3 int_list [];;
+l_over_pm 3 int_list;;
