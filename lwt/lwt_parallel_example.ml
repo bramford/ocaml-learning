@@ -9,7 +9,7 @@ let () =
   let start_time = Unix.gettimeofday () in
   Printf.printf "Start time: %f\n" start_time;
 
-  Lwt_main.run (Lwt_list.iter_s (wait_time) [1.0;2.0;3.0]);
+  Lwt_main.run (Lwt_list.iter_p (wait_time) [1.0;2.0;3.0]);
 
   let end_time = Unix.gettimeofday () in
   Printf.printf "End time: %f\n" end_time;
