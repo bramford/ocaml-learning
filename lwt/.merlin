@@ -1,1 +1,1 @@
-PKG lwt
+PKG lwt lwt-pipe
