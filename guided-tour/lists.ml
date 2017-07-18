@@ -18,3 +18,9 @@ let rec l_over_pm x l ?(nl=[]) =
 ;;
 
 l_over_pm 3 int_list;;
+
+(*
+  (* Attempt at using List.map instead of pattern matching *)
+  let int_list = [(Some 1);(Some 2);(Some 3);(Some 4)];;
+  List.map (fun x -> if x  > 5 then x else None) int_list;;
+*)
