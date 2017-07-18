@@ -1,5 +1,5 @@
 (*#require "lwt";;*)
-open Lwt
+open Lwt.Infix
 
 let get_input prompt =
   print_string (prompt ^ ": ");
