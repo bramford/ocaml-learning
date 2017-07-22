@@ -2,8 +2,8 @@ let int_list = [1;2;3;4];;
 
 (* method using List methods and pipe*)
 let l_over x l =
-  List.sort (Pervasives.compare) l |> fun l_s ->
-  List.filter (fun e -> e > x) l_s
+  List.sort (Pervasives.compare) l |>
+  List.filter (fun e -> e > x)
 ;;
 
 l_over 3 int_list;;
