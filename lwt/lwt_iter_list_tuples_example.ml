@@ -6,20 +6,11 @@ let () =
   [("a","b");("c","d")] |> fun my_tuple_list ->
   List.iter pt my_tuple_list
 
-(* Print Lwt tuple list *)
-let () =
-  let pt tp =
-    let (a,b) = (Lwt_main.run tp) in
-    Lwt_io.printf "%s, %s\n%!" a b
-  in
-  [Lwt.return ("a","b"); Lwt.return ("c","d")] |> fun my_tuple_list ->
-  Lwt_main.run (Lwt_list.iter_p pt my_tuple_list)
-
-(* Print standard tuple list (converted from lwt tuple list) *)
+(* Print Lwt tuple list in parallel *)
 let () =
   let pt lwttpl =
-    let (a,b) = (Lwt_main.run lwttpl) in
-    Printf.printf "%s, %s\n%!" a b
+    lwttpl >>= fun (a,b) ->
+    Lwt_io.printf "%s, %s\n%!" a b
   in
-  [Lwt.return ("a","b"); Lwt.return ("c","d")] |> fun my_tuple_list_lwt ->
-  List.iter pt my_tuple_list_lwt
+  let my_tuple_list_lwt = [Lwt.return ("a","b"); Lwt.return ("c","d")] in
+  Lwt_main.run (Lwt_list.iter_p pt my_tuple_list_lwt)
