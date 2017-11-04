@@ -1,13 +1,17 @@
 (* Immutable *)
-let double_plus_one x =
-  x * 2 + 1
+let double_plus_one n =
+  n * 2 + 1
 ;;
 
 (* Mutable *)
-let mutable_double_plus_one x =
-  let x = ref x in
+let mutable_double_plus_one n =
+  (* Set ref value *)
+  let x = ref n in
+  (* Set y to the value of x *)
   let y = !x in
+  (* Set the value of x to the value of x plus 1 *)
   x := !x + 1;
+  (* Execute y plus the value of x *)
   y + !x
 ;;
 
