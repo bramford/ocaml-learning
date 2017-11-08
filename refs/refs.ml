@@ -1,6 +1,9 @@
 (* Immutable *)
 let double_plus_one n =
-  n * 2 + 1
+  let x = n in
+  let y = x in
+  let x = x + 1 in
+  y + x 
 ;;
 
 (* Mutable *)
