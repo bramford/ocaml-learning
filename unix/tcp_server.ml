@@ -7,21 +7,24 @@ let establish_server server_fun sockaddr =
   Unix.bind sock sockaddr ;
   Unix.listen sock 3 ;
     while true do
-      let (s, caller) = Unix.accept sock 
-      in match Unix.fork() with
-        | 0 -> if Unix.fork() <> 0 then exit 0 ; 
-            let inchan = Unix.in_channel_of_descr s in
-            let outchan = Unix.out_channel_of_descr s in
-            server_fun caller inchan outchan ;
-            close_in inchan ;
-            close_out outchan ;
-            exit 0;
-        | id -> Unix.close s; ignore(Unix.waitpid [] id)
+      let (s, caller) = Unix.accept sock in
+      match Unix.fork() with
+      | 0 ->
+        if Unix.fork() <> 0 then exit 0 ; 
+        let inchan = Unix.in_channel_of_descr s in
+        let outchan = Unix.out_channel_of_descr s in
+        server_fun caller inchan outchan ;
+        close_in inchan ;
+        close_out outchan ;
+        exit 0
+      | id ->
+        Unix.close s ;
+        ignore(Unix.waitpid [] id)
     done
 
 let main_server serv_fun =
   if Array.length Sys.argv < 3 then
-    Printf.eprintf "ERROR: Not enough args given - specify ip/host as $1 and port number as $2'\n"
+    Printf.printf "ERROR: Not enough args given\n$1 - IP/hostname to listen on\n$2 - TCP port to listen on $2\n"
   else try
     let my_address = Unix.inet_addr_of_string Sys.argv.(1) in
     let port = int_of_string Sys.argv.(2) in
@@ -29,7 +32,7 @@ let main_server serv_fun =
   with
   | Failure e ->
     match e with
-    | "inet_addr_of_string" -> Printf.printf "ERROR: Invalid IP address\n"
+    | "inet_addr_of_string" -> Printf.printf "ERROR: Invalid IP/host address\n"
     | "int_of_string" -> Printf.printf "ERROR: Invalid TCP port\n"
     | _ -> Printf.printf "ERROR: %s\n" e
 
@@ -44,7 +47,7 @@ let echosock_server caller ic oc =
       in
       match caller_s with
       | "" -> output_string oc (s^"\n") ;
-      | _ -> output_string oc ("from "^caller_s^" - "^s^"\n") ;
+      | _ -> output_string oc ("caller: "^caller_s^", message: "^s^"\n") ;
       flush oc ;
     done
   with _ ->
