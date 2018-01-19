@@ -4,23 +4,31 @@
 let establish_server server_fun sockaddr =
   let domain = Unix.domain_of_sockaddr sockaddr in
   let sock = Unix.socket domain Unix.SOCK_STREAM 0 in
-  Unix.bind sock sockaddr ;
-  Unix.listen sock 3 ;
-    while true do
-      let (s, caller) = Unix.accept sock in
-      match Unix.fork() with
-      | 0 ->
-        if Unix.fork() <> 0 then exit 0 ; 
-        let inchan = Unix.in_channel_of_descr s in
-        let outchan = Unix.out_channel_of_descr s in
-        server_fun caller inchan outchan ;
-        close_in inchan ;
-        close_out outchan ;
-        exit 0
-      | id ->
-        Unix.close s ;
-        ignore(Unix.waitpid [] id)
-    done
+  try
+    Unix.bind sock sockaddr ;
+    Unix.listen sock 3 ;
+      while true do
+        let (s, caller) = Unix.accept sock in
+        match Unix.fork() with
+        | 0 ->
+          if Unix.fork() <> 0 then exit 0 ; 
+          let inchan = Unix.in_channel_of_descr s in
+          let outchan = Unix.out_channel_of_descr s in
+          server_fun caller inchan outchan ;
+          close_in inchan ;
+          close_out outchan ;
+          exit 0
+        | id ->
+          Unix.close s ;
+          ignore(Unix.waitpid [] id)
+      done
+  with
+  | Sys.Break -> 
+    print_endline "INFO: Caught Ctrl-C, shutting down" ;
+    flush (Unix.out_channel_of_descr Unix.stdout) ;
+    Unix.shutdown sock Unix.SHUTDOWN_ALL ;
+    Unix.close sock ;
+    exit 2
 
 let main_server serv_fun =
   if Array.length Sys.argv < 3 then
@@ -53,9 +61,11 @@ let echosock_server caller ic oc =
   with _ ->
     Printf.printf "End of text\n" ;
     flush (Unix.out_channel_of_descr Unix.stdout) ;
-    exit 0
+    Unix.shutdown_connection ic ;
+    Unix.close (Unix.descr_of_out_channel oc)
 
 let go_uppercase_service () = 
+  Sys.catch_break true ;
   Unix.handle_unix_error main_server echosock_server
 ;;
 

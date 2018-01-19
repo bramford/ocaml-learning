@@ -12,9 +12,6 @@ let open_connection sockaddr =
     Unix.close sock ;
     raise exn
 
-let shutdown_connection inchan =
-  Unix.shutdown (Unix.descr_of_in_channel inchan) Unix.SHUTDOWN_SEND
-
 let main_client client_fun  =
   if Array.length Sys.argv < 3 then
     Printf.printf "ERROR: Not enough args given\n$1 - IP/hostname to connect to\n$2 - TCP port to connect to\n"
@@ -36,7 +33,7 @@ let main_client client_fun  =
       let sockaddr = Unix.ADDR_INET(server_addr,port) in 
       let ic,oc = open_connection sockaddr in
       client_fun ic oc ;
-      shutdown_connection ic ;
+      Unix.shutdown_connection ic ;
     with
     | Failure e ->
       Printf.printf "ERROR: Invalid TCP port\n" ;
@@ -45,20 +42,30 @@ let main_client client_fun  =
 let client_fun ic oc = 
   try
     while true do  
-      print_string  "Request: " ;
-      flush stdout ;
-      output_string oc ((input_line stdin)^"\n") ;
-      flush oc ;
-      let r = input_line ic in
-      Printf.printf "Response: '%s'\n\n" r ;
-      if r = "END" then ( shutdown_connection ic ; raise Exit) ;
+      try
+        print_string  "Request: " ;
+        flush stdout ;
+        output_string oc ((input_line stdin)^"\n") ;
+        flush oc ;
+        let r = input_line ic in
+        Printf.printf "Response: '%s'\n\n" r ;
+        if r = "END" then ( Unix.shutdown_connection ic ; raise Exit) ;
+      with
+      | Sys.Break -> 
+        print_endline "INFO: Caught Ctrl-C, shutting down" ;
+        Unix.shutdown_connection ic ;
+        Unix.close (Unix.descr_of_out_channel oc) ;
+        exit 2
     done
   with 
   | Exit -> exit 0
   | exn ->
-    shutdown_connection ic ;
+    Unix.shutdown_connection ic ;
     raise exn
 
-let go_client () = main_client client_fun ;;
+let go_client () =
+  Sys.catch_break true ;
+  main_client client_fun
+;;
 
 go_client ()
