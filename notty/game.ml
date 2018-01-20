@@ -1,11 +1,5 @@
 open Notty.Infix;;
 
-let myfirststyle = Notty.A.(fg red) in
-let mysecondstyle = Notty.A.(bg blue) in
-let mystyle = myfirststyle ++ mysecondstyle in
-let wow = Notty.I.string mystyle "Wow!" in
-Notty.I.(wow <-> (void 2 0 <|> wow)) |> Notty_unix.output_image
-
 type nature =
   | Good
   | Bad
@@ -37,20 +31,27 @@ let entity_to_image = function
      | Good -> Notty.I.string Notty.A.(fg white) "M"
      | Bad -> Notty.I.string Notty.A.(fg red) "M")
 
-let rec image_of_world w ?(i=Notty.I.empty) =
+let rec image_of_world w i =
   match w with
   | [] | [_] -> i 
-  | hd :: tl -> image_of_world tl ~i:(i <|> hd)
+  | hd :: tl -> image_of_world tl (i <|> hd)
 ;;
 
 let () =
   let myworld = [
-    Human (Good); 
-    Human (Bad);
+    Human Good; 
+    Human Good; 
+    Human Bad;
+    Human Bad;
+    Tree Good; 
+    Tree Good; 
+    Tree Bad;
+    Tree Bad;
+    Monster Good; 
+    Monster Good; 
+    Monster Bad;
+    Monster Bad;
   ] in
-  let myworld_images = List.map myworld entity_to_image in
-  let myimage = image_of_world myworld_images in
+  let myworld_images = List.map entity_to_image myworld in
+  let myimage = (image_of_world myworld_images Notty.I.empty) in
   Notty_unix.output_image myimage
-  
-
-(*   let mymap_image = List.iter mymap (fun o n -> o <|> n) in *)
