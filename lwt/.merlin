@@ -1,1 +1,1 @@
-PKG lwt lwt-pipe
+PKG lwt lwt.ppx lwt.unix
