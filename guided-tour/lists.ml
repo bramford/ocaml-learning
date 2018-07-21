@@ -1,26 +1,31 @@
-let int_list = [1;2;3;4];;
+(* Implement a function that takes:
+   * int
+   * list of ints
+   Returns a list of elements from the list
+   that are greater than the given int *)
 
-(* method using List methods and pipe*)
-let l_over x l =
+(* List methods *)
+let elements_over n l =
   List.sort (Pervasives.compare) l |>
-  List.filter (fun e -> e > x)
+  List.filter (fun e -> e > n)
 ;;
 
-l_over 3 int_list;;
+let int_list = [1;2;3;4];;
+elements_over 3 int_list;;
 
-(* method using recursive pattern matching*)
-let rec l_over_pm x l ?(nl=[]) =
+(* Recursive pattern matching *)
+let rec elements_over_pm ?(nl=[]) x l =
   match l with
   | [] | [_] -> nl
   | hd :: tl ->
-    if hd > x then l_over_pm x tl ~nl:(hd :: nl)
-    else l_over_pm x tl ~nl:nl
+    let nl =
+      if hd > x then
+        hd :: tl
+      else
+        tl
+    in
+    elements_over_pm ~nl x tl
 ;;
 
-l_over_pm 3 int_list;;
-
-(*
-  (* Attempt at using List.map instead of pattern matching *)
-  let int_list = [(Some 1);(Some 2);(Some 3);(Some 4)];;
-  List.map (fun x -> if x  > 5 then x else None) int_list;;
-*)
+let int_list = [1;2;3;4];;
+elements_over_pm ~nl:[] 3 int_list;;
