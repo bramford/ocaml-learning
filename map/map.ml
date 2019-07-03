@@ -1,6 +1,6 @@
-open Batteries;;
+open Batteries
 
-module MyNumbers = Map.Make(String);;
+module MyNumbers = Map.Make(String)
 
 let print_if_val_gt_zero k v =
   match

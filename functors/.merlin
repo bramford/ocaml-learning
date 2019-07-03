@@ -1,1 +1,1 @@
-PKG core
+PKG base ppx_base core_kernel
