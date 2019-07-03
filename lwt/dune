@@ -1,0 +1,16 @@
+(executables
+    (names let
+           lwt_bind_example
+           lwt_io_example_with_ppx
+           lwt_iter_list_tuples_example
+           lwt_map_example
+           )
+    (libraries
+        lwt
+        lwt.unix
+        core.uuid
+    )
+  (preprocess
+    (pps lwt_ppx)
+  )
+)
