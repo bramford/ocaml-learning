@@ -4,6 +4,7 @@
            lwt_io_example_with_ppx
            lwt_iter_list_tuples_example
            lwt_map_example
+           lwt_parallel_io
            )
     (libraries
         lwt
