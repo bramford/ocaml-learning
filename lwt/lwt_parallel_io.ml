@@ -44,7 +44,9 @@ let send oc uuids =
 let () =
   let uuids = gen_uuids 5 in
   let ic, oc = Lwt_io.pipe () in
+  let recv = recv ic uuids in
+  let send = send oc uuids in
+  let open Lwt.Infix in
   Lwt_main.run (
-    let%lwt () = send oc uuids in
-    recv ic uuids
-  )
+      recv <&> send
+    )

@@ -1,16 +1,17 @@
 (executables
-    (names let
-           lwt_bind_example
-           lwt_io_example_with_ppx
-           lwt_iter_list_tuples_example
-           lwt_map_example
-           lwt_parallel_io
-           )
-    (libraries
-        lwt
-        lwt.unix
-        core.uuid
-    )
+  (names
+    let
+    lwt_bind_example
+    lwt_io_example_with_ppx
+    lwt_iter_list_tuples_example
+    lwt_map_example
+    lwt_parallel_io
+  )
+  (libraries
+    lwt
+    lwt.unix
+    core.uuid
+  )
   (preprocess
     (pps lwt_ppx)
   )
